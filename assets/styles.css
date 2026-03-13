@@ -132,8 +132,15 @@ td {
 
 .indexer {
 	padding: 0 5px;
+	background-color: hsla(0, 0%, 100%, 0);
+	border: none;
 }
 
 .indexer:hover {
 	cursor: pointer;
+	background-color: hsla(0, 0%, 100%, 0);
+}
+
+.indexer:active {
+	background-color: hsla(0, 0%, 100%, 0);
 }

@@ -9,14 +9,17 @@ const optionsP2 = document.getElementById("optionsP2");
 const starter = document.getElementById("starter");
 const weaponsSubsection = document.getElementById("weapons");
 const summonsSubsection = document.getElementById("summons");
+const smIndexer = document.getElementById("smIndexer");
 const spellsSubsection = document.getElementById("spells");
+const spIndexer = document.getElementById("spIndexer");
 const theBagSubsection = document.getElementById("theBag");
+const tbIndexer = document.getElementById("tbIndexer");
 const resultsSection = document.getElementById("RESULTS");
 let canvas = visuals.getContext("2d");
 let inputs = document.getElementsByTagName("input");
+let buttons = document.getElementsByTagName("button")
 let ch1Chosen = false;
 let ch2Chosen = false;
-let weaponIndex = 0;
 let summonIndex = 0;
 let spellsIndex = [0, 1, 2];
 let theBagIndex = [0, 1, 2];
@@ -24,7 +27,7 @@ let turns = 0;
 let p1;
 let p2;
 
-// Functions
+// Functions Frontend
 
 function drawOptions(container) {
     let row;
@@ -44,6 +47,108 @@ function drawOptions(container) {
     row = document.createElement("tr");
     row.innerHTML = `<td></td><td class="player1" id="random">Rand</td><td></td>`;
     container.appendChild(row);
+}
+
+function showWeapon() {
+    // NOTE: Fix the addEventListeners
+    let currWeapon;
+
+    for (let i = 0; i < p1.theBag[0].length - 1; i++) {
+        if (p1.theBag[0][i].isActive === true) {
+            currWeapon = p1.theBag[0][i];
+        }
+    }
+
+    let legend = document.createElement("legend");
+    legend.innerHTML = currWeapon.name;
+    weaponsSubsection.appendChild(legend);
+    // legend.addEventListener("onmouseover", showDescMon);
+
+    let ability = document.createElement("p");
+    ability.innerHTML = currWeapon.ability.name;
+    weaponsSubsection.appendChild(ability);
+    // ability.addEventListener("onmouseover", showDescAbb);
+
+    for (let i = 0; i < currWeapon.atks.length - 1; i++) {
+        let btn = document.createElement("button");
+        btn.innerHTML = currWeapon.atks[i].name;
+        btn.setAttribute("onclick", currWeapon.atks[i].action);
+        weaponsSubsection.appendChild(btn);
+        // btn.addEventListener("onmouseover", showDescAtk);
+    }
+}
+
+function showSummon(index) {
+    // NOTE: Fix the addEventListeners
+    let currSummon = p1.activeSummon[summonIndex];
+
+    let legend = document.createElement("legend");
+    legend.innerHTML = currSummon.name;
+    summonsSubsection.appendChild(legend);
+    // legend.addEventListener("onmouseover", showDescMon);
+
+    for (let i = 0; i < currSummon.atks.length - 1; i++) {
+        let btn = document.createElement("button");
+        btn.innerHTML = currSummon.atks[i].name;
+        btn.setAttribute("onclick", currSummon.atks[i].action);
+        weaponsSubsection.appendChild(btn);
+        // btn.addEventListener("onmouseover", showDescAtk);
+    }
+
+    // NOTE: Check if this works later
+    smIndexer.addEventListener("click", summonIndex++);
+    console.log(summonIndex);
+}
+
+function showSpells(indexes) {
+    for (let index in indexes) {
+        let btn = document.createElement("button");
+        btn.innerHTML = p1.spells[i].name;
+        btn.setAttribute("onclick", p1.spells[i].action);
+        spellsSubsection.appendChild(btn);
+        // btn.addEventListener("onmouseover", showDescSpl);
+    }
+
+    // NOTE: Check if this works later
+    spIndexer.addEventListener("click", spellsIndex++);
+    console.log(spellsIndex);
+}
+
+function showTheBag(indexes) {
+    // I'll do this later
+}
+
+// Functions Backend
+
+function startFight() {
+    if (p1.hp === 0 || p2.hp === 0) {
+        fightingSection.style.display = "none";
+        resultsSection.style.display = "flex";
+    }
+    if (p2.turn === true) {
+        for (let i = 0; i < buttons.length - 1; i++) {
+            buttons[i].disabled = true;
+        }
+    }
+
+    showWeapon();
+    showSummon(summonIndex);
+    showSpells(spellsIndex);
+    showTheBag(theBagIndex);
+}
+
+function coinThrow() {
+    let coin = Math.floor(Math.random() * 2) + 1;
+
+    if (coin === 1) {
+        p1.turn = true;
+    } else if (coin === 2) {
+        p2.turn = true;
+    } else {
+        window.location.reload();
+    }
+
+    startFight();
 }
 
 function chooseCharachter() {
@@ -67,6 +172,7 @@ function chooseCharachter() {
     if (ch1Chosen && ch2Chosen) {
         choosingSection.style.display = "none";
         fightingSection.style.display = "flex";
+        coinThrow();
     }
 }
 
